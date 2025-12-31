@@ -1,0 +1,21 @@
+// ============================================
+// Package.json Scripts (Root)
+// ============================================
+
+{
+  "name": "constructflow",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "dev:procure": "turbo run dev --filter=procure-app",
+    "dev:equip": "turbo run dev --filter=equip-app",
+    "dev:crew": "turbo run dev --filter=crew-app",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "db:types": "supabase gen types typescript --project-id YOUR_PROJECT_ID > packages/shared-db/src/types.ts"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@8.0.0"
+}
