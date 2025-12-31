@@ -8,6 +8,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@constructflow/shared-db';
 import { Card, Button, Input, Select, Alert } from '@constructflow/shared-ui';
+import type { Database } from '@constructflow/shared-db';
+
+type DailyLogInsert = Database['public']['Tables']['daily_logs']['Insert'];
 
 export default function CreateDailyLogPage() {
   const router = useRouter();
@@ -64,16 +67,23 @@ export default function CreateDailyLogPage() {
       const selectedCrew = crews.find(c => c.id === formData.crew_id);
       if (!selectedCrew) throw new Error('Please select a crew');
 
+      // Type-safe insert payload
+      const insertData: DailyLogInsert = {
+        log_date: formData.log_date,
+        crew_id: formData.crew_id,
+        project_id: selectedCrew.project_id,
+        weather: formData.weather,
+        activities: activities.filter(a => a.description) as any,
+        materials_used: selectedMaterials as any,
+        equipment_used: selectedEquipment as any,
+        issues: formData.issues,
+        notes: formData.notes,
+        submitted_by: user.id,
+      };
+
       const { error: insertError } = await supabase
         .from('daily_logs')
-        .insert({
-          ...formData,
-          project_id: selectedCrew.project_id,
-          activities: activities.filter(a => a.description),
-          materials_used: selectedMaterials,
-          equipment_used: selectedEquipment,
-          submitted_by: user.id,
-        });
+        .insert(insertData);
 
       if (insertError) throw insertError;
 
