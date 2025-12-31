@@ -5,9 +5,7 @@ const nextConfig = {
   images: {
     domains: ['your-supabase-project.supabase.co'],
   },
-  experimental: {
-    serverActions: true,
-  },
+  // HAPUS: experimental: { serverActions: true },
   output: 'standalone',
 }
 
