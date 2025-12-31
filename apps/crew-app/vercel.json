@@ -2,7 +2,7 @@
   "version": 2,
   "framework": "nextjs",
   "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm build --filter=crew-app",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "installCommand": "npm install -g pnpm@9.1.0 && pnpm install --frozen-lockfile",
   "outputDirectory": ".next",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD ../../apps/crew-app ../../packages"
 }
