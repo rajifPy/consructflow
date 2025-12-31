@@ -1,6 +1,5 @@
 // ============================================
-// Shared Login Page (use in all apps)
-// apps/procure-app/app/login/page.tsx
+// apps/equip-app/app/login/page.tsx
 // ============================================
 
 'use client';
@@ -55,7 +54,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            ConstructFlow
+            ConstructFlow Equipment
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Sign in to your account
@@ -95,10 +94,8 @@ export default function LoginPage() {
         </form>
 
         <div className="text-center text-sm text-gray-600">
-          <p>Demo Accounts:</p>
-          <p className="mt-1">Procurement: procurement@example.com</p>
-          <p>Equipment Manager: equipment@example.com</p>
-          <p>Foreman: foreman@example.com</p>
+          <p>Demo Account:</p>
+          <p className="mt-1">equipment@example.com</p>
           <p className="mt-2 text-xs">(Password: password123)</p>
         </div>
       </div>
