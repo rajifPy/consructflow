@@ -2,8 +2,8 @@
 // apps/crew-app/app/page.tsx - Dashboard for Foreman
 // ============================================
 
-import { supabase } from '@/lib/db';
-import { Card, Button, Input, Select, Alert, StatusPill } from '@/components/ui';
+import { supabase } from '@constructflow/shared-db';
+import { Card, Button, Input, Select, Alert, StatusPill } from '@constructflow/shared-ui';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
