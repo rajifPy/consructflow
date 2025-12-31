@@ -2,6 +2,8 @@
 // packages/shared-ui/src/components/Modal.tsx
 // ============================================
 
+'use client';
+
 import React, { useEffect } from 'react';
 import { Button } from './Button';
 
