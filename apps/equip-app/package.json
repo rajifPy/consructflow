@@ -2,7 +2,11 @@
   "name": "equip-app",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@9.1.0", 
+  "packageManager": "pnpm@9.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",
