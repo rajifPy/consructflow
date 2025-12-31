@@ -1,6 +1,8 @@
 {
+  "version": 2,
+  "framework": "nextjs",
   "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm build --filter=equip-app",
-  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "installCommand": "pnpm install --frozen-lockfile",
   "outputDirectory": ".next",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./apps/equip-app ./packages"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ../../apps/equip-app ../../packages"
 }
