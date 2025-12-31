@@ -1,6 +1,3 @@
-Detail view for daily log
-// ============================================
-
 import { supabase } from '@constructflow/shared-db';
 import { Card, StatusPill, Button } from '@constructflow/shared-ui';
 import { redirect } from 'next/navigation';
