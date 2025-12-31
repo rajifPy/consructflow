@@ -1,5 +1,5 @@
 // ============================================
-// apps/procure-app/components/Navigation.tsx
+// apps/equip-app/components/Navigation.tsx
 // ============================================
 
 'use client';
@@ -11,9 +11,9 @@ import { Button } from '@constructflow/shared-ui';
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
-  { name: 'Materials', href: '/materials' },
-  { name: 'Purchase Orders', href: '/purchase-orders' },
-  { name: 'Suppliers', href: '/suppliers' },
+  { name: 'Equipment Fleet', href: '/equipment' },
+  { name: 'Deployment', href: '/deployment' },
+  { name: 'Maintenance', href: '/maintenance' },
 ];
 
 export function Navigation() {
@@ -28,7 +28,7 @@ export function Navigation() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-xl font-bold text-blue-600">ConstructFlow Procurement</span>
+              <span className="text-xl font-bold text-blue-600">ConstructFlow Equipment</span>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {navigation.map((item) => {
