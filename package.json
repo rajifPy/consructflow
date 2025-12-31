@@ -1,22 +1,11 @@
 {
   "name": "constructflow-monorepo",
   "private": true,
-  "packageManager": "pnpm@8.15.0",
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=6.0.0"
-  },
   "scripts": {
     "dev": "turbo run dev --parallel",
-    "dev:procure": "turbo run dev --filter=procure-app",
-    "dev:equip": "turbo run dev --filter=equip-app",
-    "dev:crew": "turbo run dev --filter=crew-app",
-    "build": "turbo run build",
-    "build:procure": "turbo run build --filter=procure-app",
-    "build:equip": "turbo run build --filter=equip-app",
-    "build:crew": "turbo run build --filter=crew-app",
-    "lint": "turbo run lint",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "build:crew": "cd apps/crew-app && npm run build",
+    "build:procure": "cd apps/procure-app && npm run build",
+    "build:equip": "cd apps/equip-app && npm run build"
   },
   "devDependencies": {
     "turbo": "^1.11.0"
