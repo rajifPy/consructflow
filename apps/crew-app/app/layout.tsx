@@ -2,7 +2,7 @@
 // apps/equip-app/app/layout.tsx
 // ============================================
 
-import './global.css';
+import '../global.css';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/components/AuthProvider';
 import { Navigation } from '@/components/Navigation';
