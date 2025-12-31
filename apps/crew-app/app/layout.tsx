@@ -1,17 +1,13 @@
-// ============================================
-// apps/equip-app/app/layout.tsx
-// ============================================
-
-import '../global.css';
+import './globals.css';  // BUKAN '../global.css'
 import { Inter } from 'next/font/google';
-import { AuthProvider } from '@/components/AuthProvider';
-import { Navigation } from '@/components/Navigation';
+import AuthProvider from '@/components/AuthProvider';  // Hapus { }
+import Navigation from '@/components/Navigation';      // Hapus { }
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'ConstructFlow Equipment',
-  description: 'Equipment Management System',
+  title: 'ConstructFlow Crew',
+  description: 'Crew Management System',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
