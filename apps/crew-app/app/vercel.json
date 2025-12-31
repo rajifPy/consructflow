@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && pnpm build:procure",
+  "buildCommand": "cd ../.. && pnpm build:crew",
   "outputDirectory": ".next",
   "framework": "nextjs",
   "installCommand": "pnpm install",
@@ -7,24 +7,5 @@
     "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
     "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key"
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    }
-  ]
+  }
 }
