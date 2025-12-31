@@ -1,30 +1,6 @@
 {
-  "buildCommand": "cd ../.. && pnpm install && pnpm build:procure",
-  "outputDirectory": ".next",
+  "buildCommand": "cd ../.. && corepack enable && corepack prepare pnpm@8.15.0 --activate && pnpm install && pnpm build:procure",
+  "installCommand": "corepack enable && corepack prepare pnpm@8.15.0 --activate && pnpm install",
   "framework": "nextjs",
-  "installCommand": "pnpm install",
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key"
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    }
-  ]
+  "outputDirectory": ".next"
 }
