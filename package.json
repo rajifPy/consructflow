@@ -1,26 +1,17 @@
 {
-  "name": "constructflow-monorepo",
-  "version": "1.0.0",
+  "name": "constructflow-root",
   "private": true,
+  "packageManager": "pnpm@9.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "turbo run dev --parallel",
-    "dev:procure": "turbo run dev --filter=procure-app",
-    "dev:equip": "turbo run dev --filter=equip-app",
-    "dev:crew": "turbo run dev --filter=crew-app",
     "build": "turbo run build",
-    "build:procure": "turbo run build --filter=procure-app",
-    "build:equip": "turbo run build --filter=equip-app",
-    "build:crew": "turbo run build --filter=crew-app",
-    "lint": "turbo run lint",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "db:types": "supabase gen types typescript --project-id YOUR_PROJECT_ID > packages/shared-db/src/types.ts"
+    "dev": "turbo run dev",
+    "lint": "turbo run lint"
   },
   "devDependencies": {
-    "turbo": "^1.11.0"
-  },
-  "packageManager": "pnpm@8.15.0",
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "turbo": "latest"
   }
 }
