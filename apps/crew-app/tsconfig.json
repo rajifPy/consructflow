@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./app/*"],
+      "@/components/*": ["./components/*"],
+      "@constructflow/shared-db": ["../../packages/shared-db/src"],
+      "@constructflow/shared-ui": ["../../packages/shared-ui/src"]
+    }
+  }
+}
