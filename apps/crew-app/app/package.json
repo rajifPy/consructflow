@@ -1,9 +1,9 @@
 {
-  "name": "procure-app",
+  "name": "crew-app",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3003",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
