@@ -1,9 +1,6 @@
-// ============================================
-// apps/crew-app/app/page.tsx - Dashboard for Foreman
-// ============================================
-
+// apps/crew-app/app/page.tsx
 import { supabase } from '@constructflow/shared-db';
-import { Card, Button, Input, Select, Alert, StatusPill } from '@constructflow/shared-ui';
+import { Card, Button, StatusPill } from '@constructflow/shared-ui';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
@@ -20,8 +17,11 @@ async function getForemenDashboard() {
     `)
     .eq('foreman_id', user.id);
 
+  // Type cast to avoid TypeScript errors
+  const typedCrews = crews as any[] | null;
+
   // Get recent logs for foreman's crews
-  const crewIds = crews?.map(c => c.id) || [];
+  const crewIds = typedCrews?.map((c: any) => c.id) || [];
   const { data: recentLogs } = await supabase
     .from('daily_logs')
     .select(`
@@ -41,7 +41,7 @@ async function getForemenDashboard() {
     .in('crew_id', crewIds)
     .eq('log_date', today);
 
-  return { crews, recentLogs, todayLogsCount };
+  return { crews: typedCrews, recentLogs, todayLogsCount };
 }
 
 export default async function CrewDashboard() {
