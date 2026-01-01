@@ -19,6 +19,8 @@ export default function LoginPage() {
     setError('');
 
     try {
+      console.log('Attempting login...');
+      
       // Sign in with Supabase
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
@@ -26,12 +28,15 @@ export default function LoginPage() {
       });
 
       if (signInError) {
+        console.error('Sign in error:', signInError);
         throw signInError;
       }
 
       if (!data.user) {
-        throw new Error('Login failed');
+        throw new Error('Login failed - no user data');
       }
+
+      console.log('Sign in successful, user:', data.user.email);
 
       // Check if user has a profile
       const { data: profile, error: profileError } = await supabase
@@ -40,19 +45,31 @@ export default function LoginPage() {
         .eq('id', data.user.id)
         .single();
 
-      if (profileError || !profile) {
+      if (profileError) {
         console.error('Profile error:', profileError);
         throw new Error('User profile not found. Please contact administrator.');
       }
 
-      console.log('Login successful, redirecting...');
+      if (!profile) {
+        throw new Error('User profile not found. Please contact administrator.');
+      }
+
+      console.log('Profile found:', profile.role);
       
-      // Force hard navigation to dashboard
-      window.location.href = '/';
+      // Wait a bit for session to be fully established
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('Redirecting to dashboard...');
+      
+      // Use router.push instead of window.location for better Next.js integration
+      router.push('/');
+      router.refresh();
       
     } catch (err: any) {
       console.error('Login error:', err);
       setError(err.message || 'An error occurred during login');
+    } finally {
+      // Always reset loading state
       setLoading(false);
     }
   };
@@ -96,7 +113,12 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-6">
-              <Button type="submit" loading={loading} className="w-full" disabled={loading}>
+              <Button 
+                type="submit" 
+                loading={loading} 
+                className="w-full" 
+                disabled={loading}
+              >
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
             </div>
