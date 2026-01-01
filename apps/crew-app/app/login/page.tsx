@@ -92,7 +92,7 @@ export default function LoginPage() {
 
         <div className="text-center text-sm text-gray-600">
           <p>Demo Account:</p>
-          <p className="mt-1">foreman@example.com</p>
+          <p className="mt-1">crew-foreman@gmail.com</p>
           <p className="mt-2 text-xs">(Password: password123)</p>
         </div>
       </div>
