@@ -7,14 +7,17 @@ import { Card, Button, StatusPill } from '@constructflow/shared-ui';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+interface Project {
+  name: string;
+  location: string;
+  status: string;
+}
+
 interface Crew {
   id: string;
   name: string;
-  projects?: {
-    name: string;
-    location: string;
-    status: string;
-  };
+  project_id: string;
+  projects?: Project | null;
 }
 
 interface DailyLog {
@@ -23,10 +26,10 @@ interface DailyLog {
   weather: string | null;
   projects?: {
     name: string;
-  };
+  } | null;
   crews?: {
     name: string;
-  };
+  } | null;
 }
 
 export default function CrewDashboard() {
@@ -60,12 +63,14 @@ export default function CrewDashboard() {
 
       if (crewsError) {
         console.error('Error loading crews:', crewsError);
-      } else {
-        setCrews(crewsData || []);
       }
 
+      // Type-safe crews data
+      const typedCrews = (crewsData as Crew[]) || [];
+      setCrews(typedCrews);
+
       // Get recent logs
-      const crewIds = crewsData?.map((c) => c.id) || [];
+      const crewIds = typedCrews.map((c) => c.id);
       
       if (crewIds.length > 0) {
         const { data: logsData, error: logsError } = await supabase
@@ -81,9 +86,10 @@ export default function CrewDashboard() {
 
         if (logsError) {
           console.error('Error loading logs:', logsError);
-        } else {
-          setRecentLogs(logsData || []);
         }
+
+        const typedLogs = (logsData as DailyLog[]) || [];
+        setRecentLogs(typedLogs);
 
         // Get today's logs count
         const today = new Date().toISOString().split('T')[0];
@@ -134,7 +140,7 @@ export default function CrewDashboard() {
         </Card>
         <Card>
           <div className="text-center">
-            <p className="text-sm text-gray-500">Today's Logs</p>
+            <p className="text-sm text-gray-500">Today&apos;s Logs</p>
             <p className="text-3xl font-bold text-blue-600">{todayLogsCount}</p>
           </div>
         </Card>
@@ -154,8 +160,8 @@ export default function CrewDashboard() {
               <div key={crew.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div>
                   <p className="font-medium text-gray-900">{crew.name}</p>
-                  <p className="text-sm text-gray-500">{crew.projects?.name}</p>
-                  <p className="text-xs text-gray-400">{crew.projects?.location}</p>
+                  <p className="text-sm text-gray-500">{crew.projects?.name || 'No project'}</p>
+                  <p className="text-xs text-gray-400">{crew.projects?.location || ''}</p>
                 </div>
                 {crew.projects?.status && (
                   <StatusPill status={crew.projects.status} />
@@ -183,8 +189,8 @@ export default function CrewDashboard() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">{log.projects?.name}</p>
-                    <p className="text-sm text-gray-500">{log.crews?.name}</p>
+                    <p className="font-medium text-gray-900">{log.projects?.name || 'Unknown Project'}</p>
+                    <p className="text-sm text-gray-500">{log.crews?.name || 'Unknown Crew'}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">
