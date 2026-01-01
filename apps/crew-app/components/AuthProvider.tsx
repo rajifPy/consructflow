@@ -66,11 +66,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       
       // Handle sign in - redirect from login to dashboard
       if (event === 'SIGNED_IN') {
-        console.log('User signed in');
+        console.log('User signed in, redirecting to dashboard');
         if (pathname === '/login') {
-          console.log('Redirecting from login to dashboard...');
-          router.push('/');
-          router.refresh();
+          // Use replace instead of push to avoid back button issues
+          router.replace('/');
         }
       }
     });
@@ -90,6 +89,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       console.error('Sign out error:', error);
     }
   };
+
+  // Don't render children until initial auth check is complete
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider value={{ user, loading, signOut }}>
