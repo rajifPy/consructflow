@@ -32,8 +32,11 @@ async function getDailyLog(id: string) {
         .select('id, name, unit')
         .in('id', materialIds);
 
+      // Type cast materials to avoid TypeScript errors
+      const typedMaterials = materials as any[] | null;
+
       materialsWithDetails = (typedLog.materials_used as any[]).map((mu: any) => {
-        const material = materials?.find(m => m.id === mu.material_id);
+        const material = typedMaterials?.find((m: any) => m.id === mu.material_id);
         return {
           ...mu,
           name: material?.name,
@@ -53,8 +56,11 @@ async function getDailyLog(id: string) {
         .select('id, name, type')
         .in('id', equipmentIds);
 
+      // Type cast equipment to avoid TypeScript errors
+      const typedEquipment = equipment as any[] | null;
+
       equipmentWithDetails = (typedLog.equipment_used as any[]).map((eu: any) => {
-        const equip = equipment?.find(e => e.id === eu.equipment_id);
+        const equip = typedEquipment?.find((e: any) => e.id === eu.equipment_id);
         return {
           ...eu,
           name: equip?.name,
