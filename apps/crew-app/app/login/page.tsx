@@ -25,15 +25,19 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Prevent double submission
+    if (loading) return;
+    
     setLoading(true);
     setError('');
 
     try {
-      console.log('Attempting login...');
+      console.log('Attempting login for:', email);
       
       // Sign in with Supabase
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
 
@@ -69,14 +73,13 @@ export default function LoginPage() {
       const userProfile = profile as UserProfile;
       console.log('Profile found:', userProfile.role);
       
-      // Wait a bit for session to be fully established
+      // Small delay to ensure auth state is updated
       await new Promise(resolve => setTimeout(resolve, 500));
       
       console.log('Redirecting to dashboard...');
       
-      // Use router.push instead of window.location for better Next.js integration
-      router.push('/');
-      router.refresh();
+      // Use replace to prevent back button returning to login
+      router.replace('/');
       
     } catch (err: unknown) {
       console.error('Login error:', err);
@@ -100,7 +103,9 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {error && <Alert type="error" message={error} />}
+        {error && (
+          <Alert type="error" message={error} onClose={() => setError('')} />
+        )}
 
         <form onSubmit={handleLogin} className="mt-8 space-y-6">
           <Card>
@@ -113,6 +118,7 @@ export default function LoginPage() {
                 required
                 autoComplete="email"
                 disabled={loading}
+                placeholder="your.email@example.com"
               />
 
               <Input
@@ -123,6 +129,7 @@ export default function LoginPage() {
                 required
                 autoComplete="current-password"
                 disabled={loading}
+                placeholder="••••••••"
               />
             </div>
 
