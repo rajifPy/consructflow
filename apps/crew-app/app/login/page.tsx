@@ -6,6 +6,16 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@constructflow/shared-db';
 import { Card, Button, Input, Alert } from '@constructflow/shared-ui';
 
+interface UserProfile {
+  id: string;
+  full_name: string;
+  role: string;
+  phone: string | null;
+  avatar_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -38,7 +48,7 @@ export default function LoginPage() {
 
       console.log('Sign in successful, user:', data.user.email);
 
-      // Check if user has a profile
+      // Check if user has a profile with proper typing
       const { data: profile, error: profileError } = await supabase
         .from('user_profiles')
         .select('*')
@@ -50,11 +60,14 @@ export default function LoginPage() {
         throw new Error('User profile not found. Please contact administrator.');
       }
 
-      if (!profile) {
-        throw new Error('User profile not found. Please contact administrator.');
+      // Type guard to ensure profile exists and has required fields
+      if (!profile || typeof profile !== 'object' || !('role' in profile)) {
+        throw new Error('Invalid user profile. Please contact administrator.');
       }
 
-      console.log('Profile found:', profile.role);
+      // Now TypeScript knows profile has the correct shape
+      const userProfile = profile as UserProfile;
+      console.log('Profile found:', userProfile.role);
       
       // Wait a bit for session to be fully established
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -65,9 +78,10 @@ export default function LoginPage() {
       router.push('/');
       router.refresh();
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Login error:', err);
-      setError(err.message || 'An error occurred during login');
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred during login';
+      setError(errorMessage);
     } finally {
       // Always reset loading state
       setLoading(false);
