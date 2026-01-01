@@ -30,10 +30,8 @@ export async function middleware(req: NextRequest) {
 
     // Protect all other routes - require authentication
     if (!session) {
-      console.log('No session found, redirecting to login');
+      console.log('No session found, redirecting to login from:', req.nextUrl.pathname);
       const redirectUrl = new URL('/login', req.url);
-      // Add the original URL as a redirect parameter
-      redirectUrl.searchParams.set('redirect', req.nextUrl.pathname);
       return NextResponse.redirect(redirectUrl);
     }
 
@@ -42,8 +40,10 @@ export async function middleware(req: NextRequest) {
     
   } catch (error) {
     console.error('Middleware error:', error);
-    // On error, allow the request to continue
-    // This prevents breaking the app if there's a temporary issue
+    // On error, redirect to login for safety
+    if (!req.nextUrl.pathname.startsWith('/login')) {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
     return res;
   }
 }
