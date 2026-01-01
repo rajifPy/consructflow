@@ -7,6 +7,14 @@ import Link from 'next/link';
 import { supabase } from '@constructflow/shared-db';
 import { Card, Button, Input, Select, Alert } from '@constructflow/shared-ui';
 
+// Define the type for user profile insert
+type UserProfileInsert = {
+  id: string;
+  full_name: string;
+  role: string;
+  phone: string | null;
+};
+
 export default function SignUpPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -90,15 +98,17 @@ export default function SignUpPage() {
 
       console.log('Auth user created:', authData.user.id);
 
-      // 2. Create user profile
+      // 2. Create user profile with explicit typing
+      const profileData: UserProfileInsert = {
+        id: authData.user.id,
+        full_name: formData.fullName,
+        role: formData.role,
+        phone: formData.phone || null,
+      };
+
       const { error: profileError } = await supabase
         .from('user_profiles')
-        .insert({
-          id: authData.user.id,
-          full_name: formData.fullName,
-          role: formData.role,
-          phone: formData.phone || null,
-        });
+        .insert(profileData);
 
       if (profileError) {
         console.error('Profile error:', profileError);
