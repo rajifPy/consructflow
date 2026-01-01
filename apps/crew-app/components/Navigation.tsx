@@ -1,3 +1,4 @@
+// apps/crew-app/components/Navigation.tsx
 'use client';
 
 import Link from 'next/link';
@@ -10,12 +11,14 @@ const navigation = [
   { name: 'Daily Logs', href: '/daily-log' },
 ];
 
-// DEFAULT EXPORT
 export default function Navigation() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
 
-  if (!user) return null;
+  // Don't show navigation on login page or if no user
+  if (pathname === '/login' || !user) {
+    return null;
+  }
 
   return (
     <nav className="bg-white shadow">
@@ -44,8 +47,15 @@ export default function Navigation() {
               })}
             </div>
           </div>
-          <div className="flex items-center">
-            <Button variant="ghost" size="sm" onClick={signOut}>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-600">
+              {user?.email}
+            </span>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={signOut}
+            >
               Sign Out
             </Button>
           </div>
