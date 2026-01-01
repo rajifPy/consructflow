@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@constructflow/shared-db';
 import { Card, Button, Input, Alert } from '@constructflow/shared-ui';
 
