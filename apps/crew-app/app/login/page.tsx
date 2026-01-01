@@ -19,29 +19,40 @@ export default function LoginPage() {
     setError('');
 
     try {
+      // Sign in with Supabase
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (signInError) throw signInError;
+      if (signInError) {
+        throw signInError;
+      }
+
+      if (!data.user) {
+        throw new Error('Login failed');
+      }
 
       // Check if user has a profile
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('id', data.user.id)
         .single();
 
-      if (!profile) {
+      if (profileError || !profile) {
+        console.error('Profile error:', profileError);
         throw new Error('User profile not found. Please contact administrator.');
       }
 
-      router.push('/');
-      router.refresh();
+      console.log('Login successful, redirecting...');
+      
+      // Force hard navigation to dashboard
+      window.location.href = '/';
+      
     } catch (err: any) {
-      setError(err.message);
-    } finally {
+      console.error('Login error:', err);
+      setError(err.message || 'An error occurred during login');
       setLoading(false);
     }
   };
@@ -70,6 +81,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
+                disabled={loading}
               />
 
               <Input
@@ -79,12 +91,13 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
+                disabled={loading}
               />
             </div>
 
             <div className="mt-6">
-              <Button type="submit" loading={loading} className="w-full">
-                Sign In
+              <Button type="submit" loading={loading} className="w-full" disabled={loading}>
+                {loading ? 'Signing in...' : 'Sign In'}
               </Button>
             </div>
           </Card>
@@ -92,7 +105,7 @@ export default function LoginPage() {
 
         <div className="text-center text-sm text-gray-600">
           <p>Demo Account:</p>
-          <p className="mt-1">crew-foreman@gmail.com</p>
+          <p className="mt-1 font-mono">crew-foreman@gmail.com</p>
           <p className="mt-2 text-xs">(Password: password123)</p>
         </div>
       </div>
