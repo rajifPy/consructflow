@@ -1,5 +1,5 @@
 // ============================================
-// apps/crew-app/app/daily-log/create/page.tsx
+// apps/crew-app/app/daily-log/[id]/create/page.tsx
 // ============================================
 
 'use client';
@@ -67,17 +67,33 @@ export default function CreateDailyLogPage() {
       const selectedCrew = crews.find(c => c.id === formData.crew_id);
       if (!selectedCrew) throw new Error('Please select a crew');
 
-      // Type-safe insert payload
+      // Prepare JSONB data properly
+      const activitiesData = activities.filter(a => a.description).map(a => ({
+        description: a.description,
+        hours_worked: a.hours_worked
+      }));
+
+      const materialsData = selectedMaterials.filter(m => m.material_id).map(m => ({
+        material_id: m.material_id,
+        quantity_used: m.quantity_used
+      }));
+
+      const equipmentData = selectedEquipment.filter(e => e.equipment_id).map(e => ({
+        equipment_id: e.equipment_id,
+        hours_operated: e.hours_operated
+      }));
+
+      // Type-safe insert payload - cast JSONB fields properly
       const insertData: DailyLogInsert = {
         log_date: formData.log_date,
         crew_id: formData.crew_id,
         project_id: selectedCrew.project_id,
-        weather: formData.weather,
-        activities: activities.filter(a => a.description) as any,
-        materials_used: selectedMaterials as any,
-        equipment_used: selectedEquipment as any,
-        issues: formData.issues,
-        notes: formData.notes,
+        weather: formData.weather || null,
+        activities: activitiesData.length > 0 ? JSON.parse(JSON.stringify(activitiesData)) : null,
+        materials_used: materialsData.length > 0 ? JSON.parse(JSON.stringify(materialsData)) : null,
+        equipment_used: equipmentData.length > 0 ? JSON.parse(JSON.stringify(equipmentData)) : null,
+        issues: formData.issues || null,
+        notes: formData.notes || null,
         submitted_by: user.id,
       };
 
