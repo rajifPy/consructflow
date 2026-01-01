@@ -19,17 +19,20 @@ async function getDailyLog(id: string) {
     .eq('id', id)
     .single();
 
+  // Explicitly type the log to avoid TypeScript errors
+  const typedLog = log as any;
+
   // Fetch material details
   let materialsWithDetails: any[] = [];
-  if (log && log.materials_used && Array.isArray(log.materials_used)) {
-    const materialIds = (log.materials_used as any[]).map((m: any) => m.material_id);
+  if (typedLog && typedLog.materials_used && Array.isArray(typedLog.materials_used)) {
+    const materialIds = (typedLog.materials_used as any[]).map((m: any) => m.material_id);
     if (materialIds.length > 0) {
       const { data: materials } = await supabase
         .from('materials')
         .select('id, name, unit')
         .in('id', materialIds);
 
-      materialsWithDetails = (log.materials_used as any[]).map((mu: any) => {
+      materialsWithDetails = (typedLog.materials_used as any[]).map((mu: any) => {
         const material = materials?.find(m => m.id === mu.material_id);
         return {
           ...mu,
@@ -42,15 +45,15 @@ async function getDailyLog(id: string) {
 
   // Fetch equipment details
   let equipmentWithDetails: any[] = [];
-  if (log && log.equipment_used && Array.isArray(log.equipment_used)) {
-    const equipmentIds = (log.equipment_used as any[]).map((e: any) => e.equipment_id);
+  if (typedLog && typedLog.equipment_used && Array.isArray(typedLog.equipment_used)) {
+    const equipmentIds = (typedLog.equipment_used as any[]).map((e: any) => e.equipment_id);
     if (equipmentIds.length > 0) {
       const { data: equipment } = await supabase
         .from('equipment')
         .select('id, name, type')
         .in('id', equipmentIds);
 
-      equipmentWithDetails = (log.equipment_used as any[]).map((eu: any) => {
+      equipmentWithDetails = (typedLog.equipment_used as any[]).map((eu: any) => {
         const equip = equipment?.find(e => e.id === eu.equipment_id);
         return {
           ...eu,
@@ -61,7 +64,7 @@ async function getDailyLog(id: string) {
     }
   }
 
-  return { log, materialsWithDetails, equipmentWithDetails };
+  return { log: typedLog, materialsWithDetails, equipmentWithDetails };
 }
 
 export default async function DailyLogDetailPage({ params }: { params: { id: string } }) {
@@ -96,13 +99,13 @@ export default async function DailyLogDetailPage({ params }: { params: { id: str
           </div>
           <div>
             <p className="text-sm text-gray-500">Project</p>
-            <p className="text-lg font-medium text-gray-900">{(log as any).projects?.name}</p>
-            <p className="text-sm text-gray-500">{(log as any).projects?.location}</p>
+            <p className="text-lg font-medium text-gray-900">{log.projects?.name}</p>
+            <p className="text-sm text-gray-500">{log.projects?.location}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Crew</p>
-            <p className="text-lg font-medium text-gray-900">{(log as any).crews?.name}</p>
-            <p className="text-sm text-gray-500">by {(log as any).user_profiles?.full_name}</p>
+            <p className="text-lg font-medium text-gray-900">{log.crews?.name}</p>
+            <p className="text-sm text-gray-500">by {log.user_profiles?.full_name}</p>
           </div>
         </div>
 
@@ -113,16 +116,16 @@ export default async function DailyLogDetailPage({ params }: { params: { id: str
           </div>
           <div>
             <p className="text-sm text-gray-500">Project Status</p>
-            <StatusPill status={(log as any).projects?.status} />
+            <StatusPill status={log.projects?.status} />
           </div>
         </div>
       </Card>
 
       {/* Activities */}
       <Card title="Activities Performed">
-        {log.activities && Array.isArray(log.activities) && (log.activities as any[]).length > 0 ? (
+        {log.activities && Array.isArray(log.activities) && log.activities.length > 0 ? (
           <div className="space-y-3">
-            {(log.activities as any[]).map((activity: any, index: number) => (
+            {log.activities.map((activity: any, index: number) => (
               <div key={index} className="flex items-start p-4 bg-gray-50 rounded-lg">
                 <div className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-medium">
                   {index + 1}
@@ -210,10 +213,10 @@ export default async function DailyLogDetailPage({ params }: { params: { id: str
       </Card>
 
       {/* Progress Photos */}
-      {log.progress_photos && Array.isArray(log.progress_photos) && (log.progress_photos as string[]).length > 0 && (
-        <Card title={`Progress Photos (${(log.progress_photos as string[]).length})`}>
+      {log.progress_photos && Array.isArray(log.progress_photos) && log.progress_photos.length > 0 && (
+        <Card title={`Progress Photos (${log.progress_photos.length})`}>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {(log.progress_photos as string[]).map((photoUrl: string, index: number) => (
+            {log.progress_photos.map((photoUrl: string, index: number) => (
               <a
                 key={index}
                 href={photoUrl}
@@ -256,7 +259,7 @@ export default async function DailyLogDetailPage({ params }: { params: { id: str
           <div>
             <p className="text-gray-500">Submitted By</p>
             <p className="font-medium text-gray-900">
-              {(log as any).user_profiles?.full_name} ({(log as any).user_profiles?.role})
+              {log.user_profiles?.full_name} ({log.user_profiles?.role})
             </p>
           </div>
           <div>
