@@ -16,15 +16,16 @@ export async function middleware(req: NextRequest) {
     } = await supabase.auth.getSession();
 
     const isLoginPage = req.nextUrl.pathname === '/login';
+    const isSignUpPage = req.nextUrl.pathname === '/signup';
+    const isAuthCallback = req.nextUrl.pathname === '/auth/callback';
 
-    // Allow public access to login page
-    if (isLoginPage) {
+    // Allow public access to auth pages
+    if (isLoginPage || isSignUpPage || isAuthCallback) {
       // If user is already logged in, redirect to dashboard
-      if (session) {
+      if (session && !isAuthCallback) {
         console.log('User already logged in, redirecting to dashboard');
         return NextResponse.redirect(new URL('/', req.url));
       }
-      console.log('Login page access allowed - no session');
       return res;
     }
 
