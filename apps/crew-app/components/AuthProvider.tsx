@@ -28,27 +28,50 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const initAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          setUser(null);
+        } else {
+          setUser(session?.user ?? null);
+          console.log('Initial session loaded:', session?.user?.email || 'No user');
+        }
+      } catch (error) {
+        console.error('Error in initAuth:', error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
+      console.log('Auth state changed:', event, 'User:', session?.user?.email);
+      
       setUser(session?.user ?? null);
       setLoading(false);
 
       // Handle sign out
       if (event === 'SIGNED_OUT') {
+        console.log('User signed out, redirecting to login...');
         router.push('/login');
       }
       
-      // Handle sign in
-      if (event === 'SIGNED_IN' && pathname === '/login') {
-        router.push('/');
+      // Handle sign in - redirect from login to dashboard
+      if (event === 'SIGNED_IN') {
+        console.log('User signed in');
+        if (pathname === '/login') {
+          console.log('Redirecting from login to dashboard...');
+          router.push('/');
+          router.refresh();
+        }
       }
     });
 
@@ -59,14 +82,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   const signOut = async () => {
     try {
+      console.log('Signing out...');
       await supabase.auth.signOut();
+      setUser(null);
       router.push('/login');
     } catch (error) {
       console.error('Sign out error:', error);
     }
   };
 
-  // Don't block rendering - let middleware handle redirects
   return (
     <AuthContext.Provider value={{ user, loading, signOut }}>
       {children}
